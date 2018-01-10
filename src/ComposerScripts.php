@@ -67,27 +67,29 @@ class ComposerScripts
             $index = json_decode(file_get_contents($index_path), true);
         }
 
-        $files = [];
-        $it = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($storage)
-        );
+        $albums = [];
+        $it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(
+            $storage,
+            \FilesystemIterator::SKIP_DOTS
+        ));
         $it->rewind();
         while ($it->valid()) {
-            if (!$it->isDot()) {
-                $extension = pathinfo($it->getBasename(), PATHINFO_EXTENSION);
-                if (in_array($extension, self::EXTENSIONS)) {
-                    $files[$it->getSubPathName()] = self::SKELETON;
-                }
+            if (in_array($it->getExtension(), self::EXTENSIONS)) {
+                $albums[$it->getSubPath()][$it->getFileName()] = self::SKELETON;
             }
             $it->next();
         }
 
-        $index = array_merge(
-            $files,
-            array_intersect_key($index, $files)
-        );
-        ksort($index);
+        foreach ($albums as $album => &$files) {
+            $files = array_merge(
+                $files,
+                array_intersect_key($index[$album] ?? [], $files)
+            );
+            ksort($files);
+        }
+        unset($files);
+        ksort($albums);
 
-        file_put_contents($index_path, json_encode($index, JSON_PRETTY_PRINT));
+        file_put_contents($index_path, json_encode($albums, JSON_PRETTY_PRINT));
     }
 }
