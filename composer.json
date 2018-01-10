@@ -10,5 +10,13 @@
     ],
     "require": {
         "php": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "aryelgois\\LocalGallery\\": "src/"
+        }
+    },
+    "scripts": {
+        "gallery-index": "aryelgois\\LocalGallery\\ComposerScripts::index"
     }
 }
