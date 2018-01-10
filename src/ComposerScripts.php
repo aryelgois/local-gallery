@@ -46,6 +46,9 @@ class ComposerScripts
      * @var array
      */
     const SKELETON = [
+        'dimension' => [0, 0],
+        'mtime' => 0,
+        'size' => 0,
         'tags' => [],
     ];
 
@@ -75,15 +78,32 @@ class ComposerScripts
         $it->rewind();
         while ($it->valid()) {
             if (in_array($it->getExtension(), self::EXTENSIONS)) {
-                $albums[$it->getSubPath()][$it->getFileName()] = self::SKELETON;
+                $imageinfo = getimagesize($it->key());
+                $albums[$it->getSubPath()][$it->getFileName()] = array_merge(
+                    self::SKELETON,
+                    [
+                        'dimension' => [$imageinfo[0], $imageinfo[1]],
+                        'mtime' => $it->getMTime(),
+                        'size' => $it->getSize(),
+                    ]
+                );
             }
             $it->next();
         }
 
         foreach ($albums as $album => &$files) {
-            $files = array_merge(
+            $old = $index[$album] ?? [];
+            foreach ($old as $old_file) {
+                unset(
+                    $old_file['mtime'],
+                    $old_file['dimension'],
+                    $old_file['size']
+                );
+            }
+
+            $files = array_merge_recursive(
                 $files,
-                array_intersect_key($index[$album] ?? [], $files)
+                array_intersect_key($old, $files)
             );
             ksort($files);
         }
