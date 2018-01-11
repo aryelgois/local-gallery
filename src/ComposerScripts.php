@@ -93,15 +93,16 @@ class ComposerScripts
 
         foreach ($albums as $album => &$files) {
             $old = $index[$album] ?? [];
-            foreach ($old as $old_file) {
+            foreach ($old as &$old_file) {
                 unset(
                     $old_file['mtime'],
                     $old_file['dimension'],
                     $old_file['size']
                 );
             }
+            unset($old_file);
 
-            $files = array_merge_recursive(
+            $files = array_replace_recursive(
                 $files,
                 array_intersect_key($old, $files)
             );
