@@ -18,6 +18,7 @@ use Composer\Script\Event;
  *
  * @author Aryel Mota Góis
  * @license MIT
+ * @link https://www.github.com/aryelgois/local-gallery
  */
 class ComposerScripts
 {
@@ -34,10 +35,22 @@ class ComposerScripts
      * @var string[]
      */
     const EXTENSIONS = [
+        // Pictures
+        'bmp',
         'jpg',
         'jpeg',
         'gif',
         'png',
+
+        // Vectors
+        // 'svg',
+
+        // Videos
+        'avi',
+        'mkv',
+        'mp4',
+        'webm',
+        'wmv',
     ];
 
     /**
@@ -47,9 +60,15 @@ class ComposerScripts
      */
     const SKELETON = [
         'dimension' => [0, 0],
+        'favorite' => false,
+        'location' => '',
         'mtime' => 0,
+        // 'rotation' => 0,
         'size' => 0,
         'tags' => [],
+        // 'thumbnail' => null,
+        'time' => null,
+        // 'type' => null, // picture / vector / video
     ];
 
     /**
@@ -87,6 +106,11 @@ class ComposerScripts
                         'size' => $it->getSize(),
                     ]
                 );
+                // $albums[$it->getSubPathName()] = array_merge(
+                //     self::SKELETON,
+                //     ['size' => $it->getSize()]
+                // );
+                // $it->getMTime()
             }
             $it->next();
         }
@@ -111,6 +135,7 @@ class ComposerScripts
         unset($files);
         ksort($albums);
 
+        // echo json_encode($albums, JSON_PRETTY_PRINT); die;
         file_put_contents($index_path, json_encode($albums, JSON_PRETTY_PRINT));
     }
 }

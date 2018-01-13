@@ -3,6 +3,7 @@
  *
  * @author Aryel Mota Góis
  * @license MIT
+ * @link https://www.github.com/aryelgois/local-gallery
  *
  * @param object ns namespace
  * @param object $  jQuery
@@ -21,6 +22,10 @@
    */
   const basename = function pathBasename(str, sep) {
     return str.substr(str.lastIndexOf(sep) + 1);
+  };
+
+  const dirname = function pathDirname(str, sep) {
+    return str.substr(0, str.lastIndexOf(sep));
   };
 
   const has = Object.prototype.hasOwnProperty;
@@ -54,6 +59,7 @@
 
       select_file (event) {
         // TODO
+        console.log($(this).data());
       },
     },
 
@@ -64,6 +70,9 @@
           let $el = $('<div>')
             .css({'background-image': `url("/storage/${path}")`});
 
+          if (has.call(v, 'attr')) {
+            $el.attr(v.attr);
+          }
           if (has.call(v, 'data')) {
             $el.data(v.data);
           }
@@ -112,6 +121,7 @@
 
       update (albums) {
         let indexes = {
+          favorite: [],
           mtime: [],
           size: [],
           tags: {},
@@ -122,6 +132,10 @@
             data.album = album;
             data.name = file;
 
+            if (has.call(data, 'favorite') && data.favorite === true) {
+              indexes.favorite.push(data);
+            }
+
             $.each(data.tags, (i, tag) => {
               indexes.tags[tag] = indexes.tags[tag] || [];
               indexes.tags[tag].push(data);
@@ -131,6 +145,8 @@
             indexes.size.push(data);
           });
         });
+
+        // usort indexes.{mtime,size}
 
         storage.index = albums;
         storage.indexes = indexes;
@@ -143,12 +159,14 @@
     f.index.load(() => {
       let albums = f.gallery.list_albums();
       let $aside = $('<nav class="gallery">')
-        .on('click', 'div', f.events.select_album);
+        .on('click', 'div:not(.add-item)', f.events.select_album);
       let $main = $('<section class="gallery">')
         .on('click', 'div', f.events.select_album)
         .attr('data-album', '.');
 
       f.gallery.fill(albums, $aside.add($main));
+
+      $('<div class="add-item"><i>+</i></div>').appendTo($aside);
 
       $('body > aside').empty().append($aside);
       $('body > main').empty().append($main);

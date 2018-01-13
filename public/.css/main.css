@@ -137,6 +137,50 @@ noscript {
   margin: 0em;
   width: 5.6em;
 }
+.gallery.small > div {
+  height: 4em;
+  width: 4em;
+}
+.gallery.small > div:hover {
+  height: 4.6em;
+  width: 4.6em;
+}
+.gallery.big > div {
+  height: 8em;
+  width: 8em;
+}
+.gallery.big > div:hover {
+  height: 8.6em;
+  width: 8.6em;
+}
+
+body.gallery_hoverfixed .gallery > div:hover {
+  background-attachment: fixed;
+}
+body.gallery_hovercontain .gallery > div:hover {
+  background-color: #fff;
+  background-size: contain;
+}
+
+.gallery > div.add-item {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border: 0.2em dashed #bbb;
+  box-shadow: none;
+}
+.gallery > div.add-item i {
+  color: #00adff;
+  display: block;
+  font-size: 2em;
+  font-style: normal;
+  line-height: 2.5em;
+  position: relative;
+    bottom: 0.15em;
+  text-align: center;
+  transition: bottom 0.2s;
+}
+.gallery > div.add-item:hover i {
+  bottom: 0;
+}
 
 .gallery span {
   background: rgba(0,0,0,0.3);
@@ -210,9 +254,32 @@ noscript {
  * Miscellaneous
  */
 
+.noclicks {
+ pointer-events: none;
+}
+.noclicks.childrenclick > * {
+ pointer-events: all;
+}
+
+.noselect {
+ -webkit-user-select: none;
+ -moz-user-select: none;
+ -ms-user-select: none;
+ user-select: none;
+}
+
+
+.shadow-mini {
+  box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.1);
+}
+
 header,
 aside,
 .gallery > div,
 .shadow-small {
   box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.25);
+}
+
+.shadow-big {
+  box-shadow: 0px 5px 15px 0px rgba(0,0,0,0.25);
 }
